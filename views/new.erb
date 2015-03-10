@@ -1,5 +1,11 @@
 <h1> Nuovo Messaggio </h1>
 
+<% @errors.each do |error| %>
+ <ul type="disc">
+   <li><%= error %></li>
+ </ul>
+<% end %>
+
 <form action="/" method="POST">
   <h3> Email </h3>
 

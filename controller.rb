@@ -36,37 +36,54 @@ end
 
 get '/' do
   @messages = Message.all
+
   erb :index
 end
 
 get '/new' do
+  @errors = Message.new.errors
+
   erb :new
 end
 
 get '/show/:id' do
   @message = Message.find(params[:id].to_i)
+
   erb :show
 end
 
 get '/edit/:id' do
+  @errors = Message.new.errors.full_messages
   @message = Message.find(params[:id].to_i)
+
   erb :edit
 end
 
 get '/delete/:id' do
   Message.find(params[:id].to_i).destroy
+
   redirect('/')
 end
 
 post '/' do
-  Message.create({ :message => params[:message].strip , :email => params[:email]})
   @messages = Message.all
-  binding.pry
-  erb :index
+
+  if Message.create({ :message => params[:message].strip , :email => params[:email]}).valid?
+    erb :index
+  else
+    @errors = Message.create({ :message => params[:message].strip , :email => params[:email]}).errors.full_messages
+    erb :new
+  end
 end
 
 post '/edit/:id' do
   @messages = Message.all()
-  Message.update(params[:id].to_i, :message => params[:message].strip , :email => params[:email])
-  erb :index
+  @message = Message.find(params[:id].to_i)
+
+  if Message.update(params[:id].to_i, :message => params[:message].strip , :email => params[:email]).valid?
+    erb :index
+  else
+    @errors = Message.update(params[:id].to_i, :message => params[:message].strip , :email => params[:email]).errors.full_messages
+    erb :edit
+  end
 end
