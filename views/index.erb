@@ -11,9 +11,9 @@
   </thead>
 
   <tbody>
-    <% @messages.each do |message| %>
+    <% @messages.each_with_index do |message , index | %>
       <tr>
-        <td><%= message.id %></td>
+        <td><%= index + 1 %></td>
         <td><%= message.email %></td>
         <td><%= message.message %></td>
         <td><a href="/show/<%= message.id %>">Mostra<a/></td>
@@ -25,3 +25,10 @@
 </table>
 
 <a href="/new">Nuovo Messaggio<a/>
+
+ <h1> Cerca </h1>
+
+ <form action="/search" method="POST">
+   <input type="text" name="search" value=<%= params[:search] %>>
+   <input type="submit" value="Cerca... ">
+ </form>

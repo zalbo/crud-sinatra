@@ -5,6 +5,7 @@ require 'logger'
 require 'shotgun'
 require 'pry'
 
+
 ActiveRecord::Base.logger = Logger.new(STDOUT)
 
 ActiveRecord::Base.establish_connection(
@@ -36,7 +37,7 @@ end
 
 get '/' do
   @messages = Message.all
-
+  
   erb :index
 end
 
@@ -86,4 +87,11 @@ post '/edit/:id' do
     @errors = Message.update(params[:id].to_i, :message => params[:message].strip , :email => params[:email]).errors.full_messages
     erb :edit
   end
+end
+
+post '/search' do
+  @result_search_message = Message.where("message LIKE (?) ", "%#{params[:search]}%")
+  @result_search_email = Message.where("email LIKE (?) ", "%#{params[:search]}%")
+
+  erb :search
 end
