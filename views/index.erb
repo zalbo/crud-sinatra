@@ -26,9 +26,15 @@
 
 <a href="/new">Nuovo Messaggio<a/>
 
- <h1> Cerca </h1>
+ <h1> Cerca nel email e nel messaggio </h1>
 
  <form action="/search" method="POST">
    <input type="text" name="search" value=<%= params[:search] %>>
    <input type="submit" value="Cerca... ">
  </form>
+
+ <% @result_search.each do |result| %>
+   <ul type="disc">
+     <li>N.<%=  result.id %>...<%=  result.message %>...<a href="/show/<%= result.id %>">Mostra<a/></li>
+    </ul>
+ <% end %>

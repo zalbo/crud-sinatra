@@ -37,6 +37,7 @@ end
 
 get '/' do
   @messages = Message.all
+  @result_search = Message.where("message LIKE (?) ", "")
   
   erb :index
 end
@@ -90,8 +91,8 @@ post '/edit/:id' do
 end
 
 post '/search' do
-  @result_search_message = Message.where("message LIKE (?) ", "%#{params[:search]}%")
-  @result_search_email = Message.where("email LIKE (?) ", "%#{params[:search]}%")
+  @messages = Message.all
+  @result_search = Message.where("message LIKE ? OR email LIKE ? ", "%#{params[:search]}%" , "%#{params[:search]}%")
 
-  erb :search
+  erb :index
 end

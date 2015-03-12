@@ -1,10 +1,6 @@
 <h3> Risultati Ricerca </h3>
 
-<% @result_search_message.each do |result| %>
-  <ul type="disc">
-    <li>N.<%=  result.id %>...<%=  result.message %>...<a href="/show/<%= result.id %>">Mostra<a/></li>
-   </ul>
-<% end %>
+
 
 <% @result_search_email.each do |result| %>
   <ul type="disc">
