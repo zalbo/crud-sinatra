@@ -11,7 +11,7 @@
   </thead>
 
   <tbody>
-    <% @messages.each_with_index do |message , index | %>
+    <% @messages.all.each_with_index do |message , index | %>
       <tr>
         <td><%= index + 1 %></td>
         <td><%= message.email %></td>
@@ -28,13 +28,18 @@
 
  <h1> Cerca nel email e nel messaggio </h1>
 
+
+
  <form action="/search" method="POST">
-   <input type="text" name="search" value=<%= params[:search] %>>
+   <input type="text" name="search" value=<%=  params[:search] %>>
    <input type="submit" value="Cerca... ">
  </form>
 
- <% @result_search.each do |result| %>
-   <ul type="disc">
-     <li>N.<%=  result.id %>...<%=  result.message %>...<a href="/show/<%= result.id %>">Mostra<a/></li>
-    </ul>
- <% end %>
+
+<% unless params[:search].nil? %>
+  <% @messages.new.search("#{params[:search]}").each do |result| %>
+     <ul type="disc">
+       <li>N.<%=  result.id %>...<%=  result.message %>...<a href="/show/<%= result.id %>">Mostra<a/></li>
+     </ul>
+  <% end %>
+<% end %>

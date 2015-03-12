@@ -33,12 +33,14 @@ end
 class Message < ActiveRecord::Base
   validates_presence_of :message
   validates :email, format: { with: /\A[^@\s]+@([^@.\s]+\.)+[^@.\s]+\z/ }
+
+  def search(word)
+   Message.where("message LIKE ? OR email LIKE ? ", "%#{word}%" , "%#{word}%")
+  end
 end
 
 get '/' do
-  @messages = Message.all
-  @result_search = Message.where("message LIKE (?) ", "")
-  
+  @messages = Message
   erb :index
 end
 
@@ -92,7 +94,7 @@ end
 
 post '/search' do
   @messages = Message.all
-  @result_search = Message.where("message LIKE ? OR email LIKE ? ", "%#{params[:search]}%" , "%#{params[:search]}%")
+
 
   erb :index
 end
