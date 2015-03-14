@@ -1,3 +1,11 @@
+
+<h1> Cerca nel email e nel messaggio </h1>
+
+<form action="/" method="GET">
+  <input type="text" name="search" value=<%=  params[:search] %>>
+  <input type="submit" value="Cerca... ">
+</form>
+
 <h1> Lista dei Messaggi </h1>
 
 <table>
@@ -25,21 +33,3 @@
 </table>
 
 <a href="/new">Nuovo Messaggio<a/>
-
- <h1> Cerca nel email e nel messaggio </h1>
-
-
-
- <form action="/search" method="POST">
-   <input type="text" name="search" value=<%=  params[:search] %>>
-   <input type="submit" value="Cerca... ">
- </form>
-
-
-<% unless params[:search].nil? %>
-  <% @messages.new.search("#{params[:search]}").each do |result| %>
-     <ul type="disc">
-       <li>N.<%=  result.id %>...<%=  result.message %>...<a href="/show/<%= result.id %>">Mostra<a/></li>
-     </ul>
-  <% end %>
-<% end %>

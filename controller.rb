@@ -1,10 +1,12 @@
-require 'sinatra'
+
+require 'rubygems'
+require 'bundler/setup'
+
 require 'active_record'
+require 'sinatra'
 require 'sqlite3'
 require 'logger'
-require 'shotgun'
 require 'pry'
-
 
 ActiveRecord::Base.logger = Logger.new(STDOUT)
 
@@ -34,13 +36,19 @@ class Message < ActiveRecord::Base
   validates_presence_of :message
   validates :email, format: { with: /\A[^@\s]+@([^@.\s]+\.)+[^@.\s]+\z/ }
 
-  def search(word)
-   Message.where("message LIKE ? OR email LIKE ? ", "%#{word}%" , "%#{word}%")
+  def self.search(word)
+    where("message LIKE ? OR email LIKE ? ", "%#{word}%" , "%#{word}%")
   end
 end
 
+
+
 get '/' do
-  @messages = Message
+  if params[:search]
+    @messages = Message.search(params[:search])
+  else
+    @messages = Message.all
+  end
   erb :index
 end
 
@@ -52,7 +60,6 @@ end
 
 get '/show/:id' do
   @message = Message.find(params[:id].to_i)
-
   erb :show
 end
 
@@ -90,11 +97,4 @@ post '/edit/:id' do
     @errors = Message.update(params[:id].to_i, :message => params[:message].strip , :email => params[:email]).errors.full_messages
     erb :edit
   end
-end
-
-post '/search' do
-  @messages = Message.all
-
-
-  erb :index
 end
