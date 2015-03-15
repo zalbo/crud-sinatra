@@ -1,9 +1,8 @@
-
-<h1> Cerca nel email e nel messaggio </h1>
+<h1> Cerca nelle email e nel messaggio </h1>
 
 <form action="/" method="GET">
   <input type="text" name="search" value=<%=  params[:search] %>>
-  <input type="submit" value="Cerca... ">
+  <input type="submit" value="Cerca... "><a href="/?search="> Reset </a>
 </form>
 
 <h1> Lista dei Messaggi </h1>
@@ -19,15 +18,15 @@
   </thead>
 
   <tbody>
-    <% @messages.all.each_with_index do |message , index | %>
-      <tr>
-        <td><%= index + 1 %></td>
-        <td><%= message.email %></td>
-        <td><%= message.message %></td>
-        <td><a href="/show/<%= message.id %>">Mostra<a/></td>
-        <td><a href="/edit/<%= message.id %>">Modifica<a/></td>
-        <td><a href="/delete/<%= message.id %>">Cancella<a/></td>
-      </tr>
+    <% @messages.each_with_index do |message , index | %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= message.email %></td>
+      <td><%= message.content%></td>
+      <td><a href="/show/<%= message.id %>">Mostra<a/></td>
+      <td><a href="/edit/<%= message.id %>">Modifica<a/></td>
+      <td><a href="/delete/<%= message.id %>">Cancella<a/></td>
+    </tr>
     <% end %>
   </tbody>
 </table>

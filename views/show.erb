@@ -1,6 +1,37 @@
 <h1> Messaggio numero <%= @message.id %></h1>
 
 <p><%= @message.email %></p>
-<p><%= @message.message %></p>
+<p><%= @message.content %></p>
 
 <a href="/">Home<a/>
+
+  <h1> Commenti </h1>
+
+  <% @message.comments.each do |comment| %>
+
+  <hr>
+  <p><%= comment.email %></p>
+  <p><%= comment.content%></p>
+
+  <% end %>
+
+  <h1> Scrivi commento </h1>
+
+  <% @comment.errors.each do |error| %>
+  <ul type="disc">
+    <li><%= error %></li>
+  </ul>
+  <% end %>
+
+
+  <form action="/comment" method="POST">
+    <input type="hidden" name="message_id" value="<%= @comment.message_id %>">
+
+    <h3> Email </h3>
+
+    <input type="text" name="email" value="<%= @comment.email %>">
+    <h3> Messaggio </h3>
+
+    <textarea rows="4" cols="50" input type="text" name="content" ><%= @comment.content %></textarea>
+    <input type="submit" value="Inserisci commento ">
+  </form>
