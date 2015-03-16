@@ -35,8 +35,19 @@ class CreateCommentMigration < ActiveRecord::Migration
   end
 end
 
+class CreateUserMigration < ActiveRecord::Migration
+  def change
+    create_table :Users do |t|
+      t.text :nickname
+      t.text :password
+      t.text :logged
+    end
+  end
+end
+
 ActiveRecord::Migrator.migrate CreateMessageMigration
 ActiveRecord::Migrator.migrate CreateCommentMigration
+ActiveRecord::Migrator.migrate CreateUserMigration
 
 begin
   CreateMessageMigration.new.migrate(:up)
@@ -48,6 +59,12 @@ begin
   CreateCommentMigration.new.migrate(:up)
 rescue ActiveRecord::StatementInvalid
   puts "table comments already exists"
+end
+
+begin
+  CreateUserMigration.new.migrate(:up)
+rescue ActiveRecord::StatementInvalid
+  puts "table users already exists"
 end
 
 class Message < ActiveRecord::Base
@@ -68,9 +85,35 @@ class Comment < ActiveRecord::Base
   belongs_to :message
 end
 
+class User < ActiveRecord::Base
+  validates_presence_of :nickname , :password
+  validates :password, length: { minimum: 3 }
+
+  def self.search(nickname, password)
+    @users_nickname = []
+    @users_password = []
+    User.all.each do |users , password|
+      @users_nickname << users.nickname
+      @users_password << users.password
+    end
+
+    if (@users_nickname.include? nickname) && (@users_password.include? password)
+      return true
+    else
+      return false
+    end
+  end
+
+  def self.logged
+
+  end
+end
+
 enable :sessions
 
+
 get '/' do
+
   session[:search] = nil if params[:search] == ""
   params[:search] = session[:search] if session[:search] && params[:search].nil?
 
@@ -106,6 +149,15 @@ get '/delete/:id' do
   Message.find(params[:id].to_i).destroy
 
   redirect('/')
+end
+
+get '/login' do
+
+  if User.search(params[:nickname], params[:password])
+    redirect('/')
+  else
+    erb :login
+  end
 end
 
 post '/' do

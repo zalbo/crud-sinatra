@@ -5,6 +5,8 @@
   <input type="submit" value="Cerca... "><a href="/?search="> Reset </a>
 </form>
 
+<% unless @messages.empty? %>
+
 <h1> Lista dei Messaggi </h1>
 
 <table>
@@ -31,4 +33,10 @@
   </tbody>
 </table>
 
+<% end %>
+
+<%= @logged %>
+
+
 <a href="/new">Nuovo Messaggio<a/>
+<a href="/login">Login<a/>

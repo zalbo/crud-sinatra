@@ -5,33 +5,53 @@
 
 <a href="/">Home<a/>
 
+
+  <% unless @message.comments.empty? %>
+
   <h1> Commenti </h1>
 
-  <% @message.comments.each do |comment| %>
 
-  <hr>
-  <p><%= comment.email %></p>
-  <p><%= comment.content%></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Message</th>
+        <th colspan="1"></th>
+      </tr>
+    </thead>
 
-  <% end %>
+    <tbody>
+      <% @message.comments.each do |comment| %>
 
-  <h1> Scrivi commento </h1>
+      <tr>
+        <td><%= comment.email %></td>
+        <td><%= comment.content %></td>
+        <td><a href="/delete_comment/<%= comment.id %>">Cancella commento<a/></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
 
-  <% @comment.errors.each do |error| %>
-  <ul type="disc">
-    <li><%= error %></li>
-  </ul>
-  <% end %>
+    <%end%>
 
 
-  <form action="/comment" method="POST">
-    <input type="hidden" name="message_id" value="<%= @comment.message_id %>">
 
-    <h3> Email </h3>
+    <h1> Scrivi commento </h1>
 
-    <input type="text" name="email" value="<%= @comment.email %>">
-    <h3> Messaggio </h3>
+    <% @comment.errors.each do |error| %>
+    <ul type="disc">
+      <li><%= error %></li>
+    </ul>
+    <% end %>
 
-    <textarea rows="4" cols="50" input type="text" name="content" ><%= @comment.content %></textarea>
-    <input type="submit" value="Inserisci commento ">
-  </form>
+
+    <form action="/comment" method="POST">
+      <input type="hidden" name="message_id" value="<%= @comment.message_id %>">
+
+      <h3> Email </h3>
+
+      <input type="text" name="email" value="<%= @comment.email %>">
+      <h3> Messaggio </h3>
+      <textarea rows="4" cols="50" input type="text" name="content" ><%= @comment.content %></textarea>
+      <input type="submit" value="Inserisci commento ">
+    </form>
