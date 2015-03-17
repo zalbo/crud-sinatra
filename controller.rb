@@ -40,7 +40,6 @@ class CreateUserMigration < ActiveRecord::Migration
     create_table :Users do |t|
       t.text :nickname
       t.text :password
-      t.text :logged
     end
   end
 end
@@ -67,6 +66,8 @@ rescue ActiveRecord::StatementInvalid
   puts "table users already exists"
 end
 
+#####################################
+
 class Message < ActiveRecord::Base
   validates_presence_of :content
   validates :email, format: { with: /\A[^@\s]+@([^@.\s]+\.)+[^@.\s]+\z/ }
@@ -89,29 +90,30 @@ class User < ActiveRecord::Base
   validates_presence_of :nickname , :password
   validates :password, length: { minimum: 3 }
 
-  def self.search(nickname, password)
-    @users_nickname = []
-    @users_password = []
-    User.all.each do |users , password|
-      @users_nickname << users.nickname
-      @users_password << users.password
-    end
+  @logged = "login"
+  @user_in_logged = ""
 
-    if (@users_nickname.include? nickname) && (@users_password.include? password)
-      return true
+  def self.search(nickname, password)
+    if where(nickname: nickname, password: password).count > 0
+      @logged = "logout"
+      @user_in_logged = nickname
     else
-      return false
+      @logged = "login"
     end
   end
 
   def self.logged
+    @logged
+  end
 
+  def self.user_in_logged
+    @user_in_logged
   end
 end
 
 enable :sessions
 
-
+#####################################
 get '/' do
 
   session[:search] = nil if params[:search] == ""
@@ -152,12 +154,12 @@ get '/delete/:id' do
 end
 
 get '/login' do
+  erb :login
+end
 
-  if User.search(params[:nickname], params[:password])
-    redirect('/')
-  else
-    erb :login
-  end
+get '/logout' do
+  User.search("", ""  )
+  redirect('/')
 end
 
 post '/' do
@@ -190,6 +192,14 @@ post '/comment' do
   else
     erb :show
   end
+end
+
+post '/login' do
+if User.search(params[:nickname], params[:password])
+  redirect('/')
+else
+  erb :login
+end
 end
 
 def message_params(params)

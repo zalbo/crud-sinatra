@@ -35,8 +35,13 @@
 
 <% end %>
 
-<%= @logged %>
 
 
 <a href="/new">Nuovo Messaggio<a/>
-<a href="/login">Login<a/>
+<% if User.logged  == "login" %>
+  <p> Ciao caro utente loggati <p>
+  <p><a href="/<%= User.logged %>"><%= User.logged %><a/><p>
+<% else %>
+  <p> Ciao <%= User.user_in_logged%> <p>
+  <p><a href="/<%= User.logged %>"><%= User.logged %><a/><p>
+<% end %>
