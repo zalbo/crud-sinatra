@@ -25,9 +25,9 @@
       <td><%= index + 1 %></td>
       <td><%= message.email %></td>
       <td><%= message.content%></td>
-      <td><a href="/show/<%= message.id %>">Mostra<a/></td>
-      <td><a href="/edit/<%= message.id %>">Modifica<a/></td>
-      <td><a href="/delete/<%= message.id %>">Cancella<a/></td>
+      <td><a href="/show/<%= message.id %>">Mostra</a></td>
+      <td><a href="/edit/<%= message.id %>">Modifica</a></td>
+      <td><a href="/delete/<%= message.id %>">Cancella</a></td>
     </tr>
     <% end %>
   </tbody>
@@ -35,13 +35,4 @@
 
 <% end %>
 
-
-
 <a href="/new">Nuovo Messaggio<a/>
-<% if User.logged  == "login" %>
-  <p> Ciao caro utente loggati <p>
-  <p><a href="/<%= User.logged %>"><%= User.logged %><a/><p>
-<% else %>
-  <p> Ciao <%= User.user_in_logged%> <p>
-  <p><a href="/<%= User.logged %>"><%= User.logged %><a/><p>
-<% end %>

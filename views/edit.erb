@@ -1,9 +1,9 @@
 <h1> Modifca Messaggio </h1>
 
-<% @message.errors.each do |error| %>
+<% @message.errors.full_messages.each do |error| %>
  <ul type="disc">
    <li><%= error %></li>
- </ul>
+  </ul>
 <% end %>
 
 <form action="/edit/<%=  @message.id %>" method="POST">

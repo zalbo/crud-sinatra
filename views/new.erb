@@ -1,6 +1,6 @@
 <h1> Nuovo Messaggio </h1>
 
-<% @message.errors.each do |error| %>
+<% @message.errors.full_messages.each do |error| %>
 <ul type="disc">
   <li><%= error %></li>
 </ul>

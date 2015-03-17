@@ -90,16 +90,11 @@ class User < ActiveRecord::Base
   validates_presence_of :nickname , :password
   validates :password, length: { minimum: 3 }
 
-  @logged = "login"
-  @user_in_logged = ""
+
 
   def self.search(nickname, password)
-    if where(nickname: nickname, password: password).count > 0
-      @logged = "logout"
-      @user_in_logged = nickname
-    else
-      @logged = "login"
-    end
+    where(nickname: nickname, password: password).count > 0
+
   end
 
   def self.logged
@@ -112,6 +107,8 @@ class User < ActiveRecord::Base
 end
 
 enable :sessions
+
+
 
 #####################################
 get '/' do
@@ -149,18 +146,20 @@ end
 
 get '/delete/:id' do
   Message.find(params[:id].to_i).destroy
-
   redirect('/')
 end
 
 get '/login' do
+  @user_errors = User.new
+
   erb :login
 end
 
 get '/logout' do
-  User.search("", ""  )
+  session[:logged] = false
   redirect('/')
 end
+
 
 post '/' do
   @message = Message.new(params)
@@ -195,11 +194,16 @@ post '/comment' do
 end
 
 post '/login' do
-if User.search(params[:nickname], params[:password])
-  redirect('/')
-else
-  erb :login
-end
+
+
+  if User.search(params[:nickname], params[:password])
+    session[:logged] = true
+    session[:nickname] = params[:nickname]
+    redirect('/')
+  else
+    @user_errors = User.create(params)
+    erb :login
+  end
 end
 
 def message_params(params)
