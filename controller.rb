@@ -205,5 +205,5 @@ def message_params(params)
 end
 
 def access_danied
-  redirect('/')
+  halt 403, erb(:error)
 end
