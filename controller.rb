@@ -90,25 +90,13 @@ class User < ActiveRecord::Base
   validates_presence_of :nickname , :password
   validates :password, length: { minimum: 3 }
 
-
-
-  def self.search(nickname, password)
+  def self.authenticate(nickname, password)
     where(nickname: nickname, password: password).count > 0
-
   end
 
-  def self.logged
-    @logged
-  end
-
-  def self.user_in_logged
-    @user_in_logged
-  end
 end
 
 enable :sessions
-
-
 
 #####################################
 get '/' do
@@ -126,6 +114,7 @@ get '/' do
 end
 
 get '/new' do
+  access_danied unless session[:logged]
   @message = Message.new
 
   erb :new
@@ -139,12 +128,14 @@ get '/show/:id' do
 end
 
 get '/edit/:id' do
+  access_danied unless session[:logged]
   @message = Message.find(params[:id].to_i)
 
   erb :edit
 end
 
 get '/delete/:id' do
+  access_danied unless session[:logged]
   Message.find(params[:id].to_i).destroy
   redirect('/')
 end
@@ -172,6 +163,7 @@ post '/' do
 end
 
 post '/edit/:id' do
+
   @message = Message.find(params[:id].to_i)
 
   if @message.update(message_params(params))
@@ -196,7 +188,7 @@ end
 post '/login' do
 
 
-  if User.search(params[:nickname], params[:password])
+  if User.authenticate(params[:nickname], params[:password])
     session[:logged] = true
     session[:nickname] = params[:nickname]
     redirect('/')
@@ -210,4 +202,8 @@ def message_params(params)
   params.delete("splat")
   params.delete("capture")
   params
+end
+
+def access_danied
+  redirect('/')
 end
