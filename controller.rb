@@ -150,7 +150,7 @@ get '/login' do
 end
 
 get '/logout' do
-  session[:logged] = false
+  session[:id] = nil
   redirect('/')
 end
 
@@ -192,7 +192,7 @@ post '/login' do
 
 
   if user = User.authenticate(params[:nickname], params[:password])
-    session[:id] = true
+    session[:id] = user.id
     redirect('/')
   else
     @user_errors = User.create(params)
