@@ -11,8 +11,8 @@
   <link rel="icon" type="image/ico" href="/images/favicon.ico" />
 </head>
 <body>
-  <% if session[:logged] %>
-    <p> Ciao <%=session[:nickname] %> </p>
+  <% if current_user %>
+    <p> Ciao <%= current_user.nickname %> </p>
     <p><a href="/logout">Logout</a></p>
   <% else %>
     <p> Ciao Loggati</p>

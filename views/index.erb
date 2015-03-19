@@ -26,7 +26,7 @@
         <td><%= message.email %></td>
         <td><%= message.content%></td>
       <td><a href="/show/<%= message.id %>">Mostra</a></td>
-      <% if session[:logged] %>
+      <% if current_user %>
         <td><a href="/edit/<%= message.id %>">Modifica</a></td>
         <td><a href="/delete/<%= message.id %>">Cancella</a></td>
       <% end %>
@@ -37,6 +37,6 @@
 
 <% end %>
 
-<% if session[:logged] %>
+<% if current_user %>
   <a href="/new">Nuovo Messaggio</a>
 <% end %>

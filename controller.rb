@@ -7,6 +7,10 @@ require 'sinatra'
 require 'sqlite3'
 require 'logger'
 require 'pry'
+require 'encrypted_cookie'
+
+use Rack::Session::EncryptedCookie,
+  :secret => "TYPE_YOUR_LONG_RANDOM_STRING_HERE"
 
 
 ActiveRecord::Base.logger = Logger.new(STDOUT)
@@ -91,12 +95,11 @@ class User < ActiveRecord::Base
   validates :password, length: { minimum: 3 }
 
   def self.authenticate(nickname, password)
-    where(nickname: nickname, password: password).count > 0
+    find_by(nickname: nickname, password: password)
   end
 
 end
 
-enable :sessions
 
 #####################################
 get '/' do
@@ -114,7 +117,7 @@ get '/' do
 end
 
 get '/new' do
-  access_danied unless session[:logged]
+  access_danied unless current_user 
   @message = Message.new
 
   erb :new
@@ -128,14 +131,14 @@ get '/show/:id' do
 end
 
 get '/edit/:id' do
-  access_danied unless session[:logged]
+  access_danied unless current_user 
   @message = Message.find(params[:id].to_i)
 
   erb :edit
 end
 
 get '/delete/:id' do
-  access_danied unless session[:logged]
+  access_danied unless  current_user
   Message.find(params[:id].to_i).destroy
   redirect('/')
 end
@@ -188,9 +191,8 @@ end
 post '/login' do
 
 
-  if User.authenticate(params[:nickname], params[:password])
-    session[:logged] = true
-    session[:nickname] = params[:nickname]
+  if user = User.authenticate(params[:nickname], params[:password])
+    session[:id] = true
     redirect('/')
   else
     @user_errors = User.create(params)
@@ -206,4 +208,10 @@ end
 
 def access_danied
   halt 403, erb(:error)
+end
+
+helpers do
+  def current_user
+    User.find_by(id: session[:id])
+  end
 end

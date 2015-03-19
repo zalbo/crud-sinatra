@@ -26,7 +26,7 @@
       <tr>
         <td><%= comment.email %></td>
         <td><%= comment.content %></td>
-        <% if session[:logged] %>
+        <% if current_user %>
           <td><a href="/delete_comment/<%= comment.id %>">Cancella commento<a/></td>
         <% end %>
         </tr>
