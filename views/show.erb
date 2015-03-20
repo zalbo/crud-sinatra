@@ -1,34 +1,33 @@
-<h1> Messaggio numero <%= @message.id %></h1>
-
-<p><%= @message.email %></p>
-<p><%= @message.content %></p>
-
+<h1><%= @article.title %></h1>
+<p><%= @article.content %></p>
+<img src="file:///Users/albertoriva/works_ruby/crud-sinatra/<%= @article.image%>"/>
+<hr>
 <a href="/">Home<a/>
 
 
-  <% unless @message.comments.empty? %>
-
+  <% unless @article.comments.empty? %>
+  <hr>
   <h1> Commenti </h1>
 
-
+  <hr>
   <table>
     <thead>
       <tr>
         <th>Email</th>
-        <th>Message</th>
+        <th>article</th>
         <th colspan="1"></th>
       </tr>
     </thead>
 
     <tbody>
-      <% @message.comments.each do |comment| %>
+      <% @article.comments.each do |comment| %>
 
       <tr>
         <td><%= comment.email %></td>
-        <td><%= comment.content %></td>
+        <td><%= article.content %></td>
         <% if current_user %>
-          <td><a href="/delete_comment/<%= comment.id %>">Cancella commento<a/></td>
-        <% end %>
+        <td><a href="/delete_comment/<%= comment.id %>">Cancella commento<a/></td>
+          <% end %>
         </tr>
         <% end %>
       </tbody>
@@ -48,7 +47,7 @@
 
 
     <form action="/comment" method="POST">
-      <input type="hidden" name="message_id" value="<%= @comment.message_id %>">
+      <input type="hidden" name="article_id" value="<%= @comment.article_id %>">
 
       <h3> Email </h3>
 

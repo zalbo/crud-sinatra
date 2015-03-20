@@ -1,61 +1,25 @@
+class Article < ActiveRecord::Base
+  validates_presence_of :content , :title
 
-  use Rack::Session::EncryptedCookie,
-  :secret => "TYPE_YOUR_LONG_RANDOM_STRING_HERE"
+  has_many :comments
 
+  def self.search(word)
+    where("content LIKE ? OR title LIKE ? ", "%#{word}%", "%#{word}%")
+  end
+end
 
-  ActiveRecord::Base.logger = Logger.new(STDOUT)
+class Comment < ActiveRecord::Base
+  validates_presence_of :content
+  validates :email, format: { with: /\A[^@\s]+@([^@.\s]+\.)+[^@.\s]+\z/ }
 
-  ActiveRecord::Base.establish_connection(
-  :adapter => 'sqlite3',
-  :database => 'zalbo.db'
-  )
+  belongs_to :article
+end
 
-  class CreateMessageMigration < ActiveRecord::Migration
-    def change
-      create_table :messages do |t|
-        t.text :email
-        t.text :content
-      end
-    end
+class User < ActiveRecord::Base
+  validates_presence_of :nickname , :password
+  validates :password, length: { minimum: 3 }
+  def self.authenticate(nickname, password)
+    find_by(nickname: nickname, password: password)
   end
 
-  class CreateCommentMigration < ActiveRecord::Migration
-    def change
-      create_table :comments do |t|
-        t.integer :message_id
-        t.text :email
-        t.text :content
-      end
-    end
-  end
-
-  class CreateUserMigration < ActiveRecord::Migration
-    def change
-      create_table :Users do |t|
-        t.text :nickname
-        t.text :password
-      end
-    end
-  end
-
-  ActiveRecord::Migrator.migrate CreateMessageMigration
-  ActiveRecord::Migrator.migrate CreateCommentMigration
-  ActiveRecord::Migrator.migrate CreateUserMigration
-
-  begin
-    CreateMessageMigration.new.migrate(:up)
-  rescue ActiveRecord::StatementInvalid
-    puts "table messages already exists"
-  end
-
-  begin
-    CreateCommentMigration.new.migrate(:up)
-  rescue ActiveRecord::StatementInvalid
-    puts "table comments already exists"
-  end
-
-  begin
-    CreateUserMigration.new.migrate(:up)
-  rescue ActiveRecord::StatementInvalid
-    puts "table users already exists"
-  end
+end

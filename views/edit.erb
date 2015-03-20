@@ -1,17 +1,15 @@
 <h1> Modifca Messaggio </h1>
 
-<% @message.errors.full_messages.each do |error| %>
- <ul type="disc">
-   <li><%= error %></li>
-  </ul>
+<% @article.errors.full_messages.each do |error| %>
+<ul type="disc">
+  <li><%= error %></li>
+</ul>
 <% end %>
 
-<form action="/edit/<%=  @message.id %>" method="POST">
-  <h3> Email </h3>
-
-  <input type="text" name="email" value=<%= @message.email %>>
+<form action="/edit/<%=  @article.id %>" method="POST">
+  <h3> Titolo </h3>
+  <input type="text" name="title" value="<%= @article.title.to_s %>">
   <h3> Messaggio </h3>
-
-  <textarea rows="4" cols="50" input type="text" name="content" ><%= @message.content %></textarea>
+  <textarea rows="4" cols="50" input type="text" name="content" ><%= @article.content %></textarea>
   <input type="submit" value="Inserisci ">
 </form>

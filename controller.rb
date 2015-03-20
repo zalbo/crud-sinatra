@@ -8,78 +8,50 @@ require 'sqlite3'
 require 'logger'
 require 'pry'
 require 'encrypted_cookie'
-require './models'
+require 'rdiscount'
+require_relative 'config'
+require_relative 'migration'
+require_relative 'models'
 
-#####################################
-
-class Message < ActiveRecord::Base
-  validates_presence_of :content
-  validates :email, format: { with: /\A[^@\s]+@([^@.\s]+\.)+[^@.\s]+\z/ }
-
-  has_many :comments
-
-  def self.search(word)
-    where("content LIKE ? OR email LIKE ? ", "%#{word}%" , "%#{word}%")
-  end
-end
-
-class Comment < ActiveRecord::Base
-  validates_presence_of :content
-  validates :email, format: { with: /\A[^@\s]+@([^@.\s]+\.)+[^@.\s]+\z/ }
-
-  belongs_to :message
-end
-
-class User < ActiveRecord::Base
-  validates_presence_of :nickname , :password
-  validates :password, length: { minimum: 3 }
-
-  def self.authenticate(nickname, password)
-    find_by(nickname: nickname, password: password)
-  end
-
-end
-
-
-#####################################
 get '/' do
 
   session[:search] = nil if params[:search] == ""
   params[:search] = session[:search] if session[:search] && params[:search].nil?
 
   if params[:search]
-    @messages = Message.search(params[:search])
+    @articles = Article.search(params[:search])
     session[:search] = params[:search]
   else
-    @messages = Message.all
+    @articles = Article.all
   end
   erb :index
 end
 
 get '/new' do
   access_danied unless current_user
-  @message = Message.new
+  @article = Article.new
 
   erb :new
 end
 
 get '/show/:id' do
-  @message = Message.find(params[:id].to_i)
-  @comment = Comment.new(message_id: @message.id)
+  @article = Article.find(params[:id].to_i)
+  @comment = Comment.new(article_id: @article.id)
 
+  File.open(@article.image, "r")
   erb :show
 end
 
 get '/edit/:id' do
   access_danied unless current_user
-  @message = Message.find(params[:id].to_i)
+  @article = Article.find(params[:id].to_i)
 
   erb :edit
 end
 
 get '/delete/:id' do
   access_danied unless  current_user
-  Message.find(params[:id].to_i).destroy
+  Article.find(params[:id].to_i).destroy
   redirect('/')
 end
 
@@ -96,9 +68,13 @@ end
 
 
 post '/' do
-  @message = Message.new(params)
 
-  if @message.save
+  File.open(params[:image][:filename], "w") do |f|
+    f.write(params[:image][:tempfile].read)
+  end
+  @article = Article.new(content: RDiscount.new(params[:content]).to_html, title: params[:title] , image: params[:image][:filename])
+
+  if @article.save
     redirect('/')
   else
     erb :new
@@ -107,9 +83,9 @@ end
 
 post '/edit/:id' do
 
-  @message = Message.find(params[:id].to_i)
+  @article = Article.find(params[:id].to_i)
 
-  if @message.update(message_params(params))
+  if @article.update(content: RDiscount.new(params[:content]).to_html, title: params[:title])
     redirect('/')
   else
     erb :edit
@@ -118,11 +94,11 @@ end
 
 post '/comment' do
 
-  @message = Message.find(params[:message_id].to_i)
-  @comment = @message.comments.build
+  @article = Article.find(params[:article_id].to_i)
+  @comment = @article.comments.build
 
-  if @comment.update(message_params(params))
-    redirect("/show/#{@message.id}")
+  if @comment.update(aricle_params(params))
+    redirect("/show/#{@article.id}")
   else
     erb :show
   end
@@ -130,7 +106,6 @@ end
 
 post '/login' do
 
-  binding.pry
   if user = User.authenticate(params[:nickname], params[:password])
     session[:id] = user.id
     redirect('/')
@@ -140,7 +115,7 @@ post '/login' do
   end
 end
 
-def message_params(params)
+def aricle_params(params)
   params.delete("splat")
   params.delete("capture")
   params
