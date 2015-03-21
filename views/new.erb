@@ -13,10 +13,10 @@
     <nav class="sidebar-nav">
       <a class="sidebar-nav-item active" href="/">Home</a>
       <% if current_user %>
-      <p> Ciao <%= current_user.nickname %> </p>
-      <p><a href="/logout">Logout</a></p>
-      <% else %>
-      <p><a href="/login">Login</a></p>
+        <p> Ciao <%= current_user.nickname %> </p>
+        <p><a href="/logout">Logout</a></p>
+        <% else %>
+        <p><a href="/login">Login</a></p>
       <% end %>
 
     </nav>

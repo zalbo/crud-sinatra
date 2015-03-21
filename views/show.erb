@@ -13,13 +13,13 @@
     <nav class="sidebar-nav">
       <a class="sidebar-nav-item active" href="/">Home</a>
       <% if current_user %>
-      <a href="/new">Nuovo Messaggio</a>
+        <a href="/new">Nuovo Messaggio</a>
       <% end %>
       <% if current_user %>
-      <p> Ciao <%= current_user.nickname %> </p>
-      <p><a href="/logout">Logout</a></p>
-      <% else %>
-      <p><a href="/login">Login</a></p>
+        <p> Ciao <%= current_user.nickname %> </p>
+        <p><a href="/logout">Logout</a></p>
+        <% else %>
+        <p><a href="/login">Login</a></p>
       <% end %>
 
     </nav>
@@ -31,47 +31,28 @@
   <div class="posts">
     <div class="post">
       <h1 class="post-title"><%= @article.title %></h1>
-      <p><%= @article.content %></p>
+      <p><%=RDiscount.new(@article.content).to_html %></p>
       <% unless @article.image.nil? %>
       <img src="/images/<%= @article.image%>"/>
       <% end %>
-      <hr>
-
-
-      <% unless @article.comments.empty? %>
-      <hr>
-      <h1> Commenti </h1>
-
-      <hr>
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>article</th>
-          <th colspan="1"></th>
-        </tr>
-      </thead>
-
-      <tbody>
+      <% if @article.save %>
+        <h1> Commenti </h1>
+        <hr>
         <% @article.comments.each do |comment| %>
-
-        <tr>
-          <td><%= comment.email %></td>
-          <td><%= article.content %></td>
+          <h3><%= comment.email %></h3>
+          <h5><%= comment.content %></h5>
           <% if current_user %>
-          <td><a href="/delete_comment/<%= comment.id %>">Cancella commento<a/></td>
-            <% end %>
-          </tr>
+            <a href="/delete_comment/<%= comment.id%>/<%= comment.article_id%>">Cancella commento</a>
           <% end %>
-        </tbody>
-      </table>
-
+        <% end %>
       <%end%>
+
 
 
 
       <h1> Scrivi commento </h1>
 
-      <% @comment.errors.each do |error| %>
+      <% @comment.errors.full_messages.each do |error| %>
       <ul type="disc">
         <li><%= error %></li>
       </ul>

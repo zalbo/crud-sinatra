@@ -1,4 +1,3 @@
-
 require 'rubygems'
 require 'bundler/setup'
 
@@ -14,10 +13,8 @@ require_relative 'migration'
 require_relative 'models'
 
 get '/' do
-
   session[:search] = nil if params[:search] == ""
   params[:search] = session[:search] if session[:search] && params[:search].nil?
-
   if params[:search]
     @articles = Article.search(params[:search])
     session[:search] = params[:search]
@@ -30,21 +27,18 @@ end
 get '/new' do
   access_danied unless current_user
   @article = Article.new
-
   erb :new
 end
 
 get '/show/:id' do
   @article = Article.find(params[:id].to_i)
   @comment = Comment.new(article_id: @article.id)
-
   erb :show
 end
 
 get '/edit/:id' do
   access_danied unless current_user
   @article = Article.find(params[:id].to_i)
-
   erb :edit
 end
 
@@ -54,9 +48,14 @@ get '/delete/:id' do
   redirect('/')
 end
 
+get '/delete_comment/:id/:a_id' do
+  access_danied unless  current_user
+  Comment.find(params[:id].to_i).destroy
+  redirect("/show/#{params[:a_id].to_i}")
+end
+
 get '/login' do
   @user_errors = User.new
-
   erb :login
 end
 
@@ -65,12 +64,10 @@ get '/logout' do
   redirect('/')
 end
 
-
 post '/' do
 
   if params[:image].nil?
-    @article = Article.new(content: RDiscount.new(params[:content]).to_html, title: params[:title])
-
+    @article = Article.new(content: params[:content], title: params[:title])
     if @article.save
       redirect('/')
     else
@@ -82,7 +79,7 @@ post '/' do
       FileUtils.mv(f, "public/images")
     end
 
-    @article = Article.new(content: RDiscount.new(params[:content]).to_html, title: params[:title] , image: params[:image][:filename])
+    @article = Article.new(content: params[:content], title: params[:title] , image: params[:image][:filename])
 
     if @article.save
       redirect('/')
@@ -93,10 +90,9 @@ post '/' do
 end
 
 post '/edit/:id' do
-
   @article = Article.find(params[:id].to_i)
 
-  if @article.update(content: RDiscount.new(params[:content]).to_html, title: params[:title])
+  if @article.update(content: params[:content], title: params[:title])
     redirect('/')
   else
     erb :edit
@@ -104,11 +100,10 @@ post '/edit/:id' do
 end
 
 post '/comment' do
-
   @article = Article.find(params[:article_id].to_i)
   @comment = @article.comments.build
 
-  if @comment.update(aricle_params(params))
+  if @comment.update(article_params(params))
     redirect("/show/#{@article.id}")
   else
     erb :show
@@ -116,7 +111,6 @@ post '/comment' do
 end
 
 post '/login' do
-
   if user = User.authenticate(params[:nickname], params[:password])
     session[:id] = user.id
     redirect('/')
@@ -126,7 +120,7 @@ post '/login' do
   end
 end
 
-def aricle_params(params)
+def article_params(params)
   params.delete("splat")
   params.delete("capture")
   params
