@@ -1,16 +1,47 @@
-<h1> Nuovo Messaggio </h1>
 
-<% @article.errors.full_messages.each do |error| %>
-<ul type="disc">
-  <li><%= error %></li>
-</ul>
-<% end %>
 
-<form action="/" enctype='multipart/form-data' method="POST">
-  <input name='image' type='file'>
-  <h3> Titolo Articolo </h3>
-  <input type="text" name="title" value=<%= @article.title %>>
-  <h3> Articolo </h3>
-  <textarea rows="4" cols="50" input type="text" name="content" ><%= @article.content %></textarea>
-  <input type="submit" value="Inserisci ">
-</form>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          Menu
+        </a>
+      </h1>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item active" href="/">Home</a>
+      <% if current_user %>
+      <p> Ciao <%= current_user.nickname %> </p>
+      <p><a href="/logout">Logout</a></p>
+      <% else %>
+      <p><a href="/login">Login</a></p>
+      <% end %>
+
+    </nav>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="posts">
+    <div class="post">
+      <h1 class="post-title"> Nuovo Messaggio </h1>
+      <% @article.errors.full_messages.each do |error| %>
+      <ul type="disc">
+        <li><%= error %></li>
+      </ul>
+      <% end %>
+
+      <form action="/" enctype='multipart/form-data' method="POST">
+        <input name='image' type='file'>
+        <h3> Titolo Articolo </h3>
+        <input type="text" name="title" value=<%= @article.title %>>
+        <h3> Articolo </h3>
+        <textarea rows="4" cols="50" input type="text" name="content" ><%= @article.content %></textarea>
+        <input type="submit" value="Inserisci ">
+      </form>
+    </div>
+  </div>
+</div>

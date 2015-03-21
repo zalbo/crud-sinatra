@@ -1,58 +1,95 @@
-<h1><%= @article.title %></h1>
-<p><%= @article.content %></p>
-<img src="/images/<%= @article.image%>"/>
-<hr>
-<a href="/">Home<a/>
 
 
-  <% unless @article.comments.empty? %>
-  <hr>
-  <h1> Commenti </h1>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          Menu
+        </a>
+      </h1>
+    </div>
 
-  <hr>
-  <table>
-    <thead>
-      <tr>
-        <th>Email</th>
-        <th>article</th>
-        <th colspan="1"></th>
-      </tr>
-    </thead>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item active" href="/">Home</a>
+      <% if current_user %>
+      <a href="/new">Nuovo Messaggio</a>
+      <% end %>
+      <% if current_user %>
+      <p> Ciao <%= current_user.nickname %> </p>
+      <p><a href="/logout">Logout</a></p>
+      <% else %>
+      <p><a href="/login">Login</a></p>
+      <% end %>
 
-    <tbody>
-      <% @article.comments.each do |comment| %>
+    </nav>
+  </div>
+</div>
 
-      <tr>
-        <td><%= comment.email %></td>
-        <td><%= article.content %></td>
-        <% if current_user %>
-        <td><a href="/delete_comment/<%= comment.id %>">Cancella commento<a/></td>
-          <% end %>
+
+<div class="content container">
+  <div class="posts">
+    <div class="post">
+      <h1 class="post-title"><%= @article.title %></h1>
+      <p><%= @article.content %></p>
+      <% unless @article.image.nil? %>
+      <img src="/images/<%= @article.image%>"/>
+      <% end %>
+      <hr>
+
+
+      <% unless @article.comments.empty? %>
+      <hr>
+      <h1> Commenti </h1>
+
+      <hr>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>article</th>
+          <th colspan="1"></th>
         </tr>
-        <% end %>
-      </tbody>
-    </table>
+      </thead>
 
-    <%end%>
+      <tbody>
+        <% @article.comments.each do |comment| %>
+
+        <tr>
+          <td><%= comment.email %></td>
+          <td><%= article.content %></td>
+          <% if current_user %>
+          <td><a href="/delete_comment/<%= comment.id %>">Cancella commento<a/></td>
+            <% end %>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <%end%>
 
 
 
-    <h1> Scrivi commento </h1>
+      <h1> Scrivi commento </h1>
 
-    <% @comment.errors.each do |error| %>
-    <ul type="disc">
-      <li><%= error %></li>
-    </ul>
-    <% end %>
+      <% @comment.errors.each do |error| %>
+      <ul type="disc">
+        <li><%= error %></li>
+      </ul>
+      <% end %>
 
 
-    <form action="/comment" method="POST">
-      <input type="hidden" name="article_id" value="<%= @comment.article_id %>">
+      <form action="/comment" method="POST">
+        <input type="hidden" name="article_id" value="<%= @comment.article_id %>">
 
-      <h3> Email </h3>
+        <h3> Email </h3>
 
-      <input type="text" name="email" value="<%= @comment.email %>">
-      <h3> Messaggio </h3>
-      <textarea rows="4" cols="50" input type="text" name="content" ><%= @comment.content %></textarea>
-      <input type="submit" value="Inserisci commento ">
-    </form>
+        <input type="text" name="email" value="<%= @comment.email %>">
+        <h3> Messaggio </h3>
+        <textarea rows="4" cols="50" input type="text" name="content" ><%= @comment.content %></textarea>
+        <input type="submit" value="Inserisci commento ">
+      </form>
+
+
+    </div>
+  </div>
+</div>

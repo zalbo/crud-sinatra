@@ -1,5 +1,5 @@
 class Article < ActiveRecord::Base
-  validates_presence_of :content , :title
+  validates_presence_of :content , :title 
 
   has_many :comments
 

@@ -68,16 +68,27 @@ end
 
 post '/' do
 
-  File.open(params[:image][:filename], "w") do |f|
-    f.write(params[:image][:tempfile].read)
-    FileUtils.mv(f, "public/images")
-  end
-  @article = Article.new(content: RDiscount.new(params[:content]).to_html, title: params[:title] , image: params[:image][:filename])
+  if params[:image].nil?
+    @article = Article.new(content: RDiscount.new(params[:content]).to_html, title: params[:title])
 
-  if @article.save
-    redirect('/')
+    if @article.save
+      redirect('/')
+    else
+      erb :new
+    end
   else
-    erb :new
+    File.open(params[:image][:filename], "w") do |f|
+      f.write(params[:image][:tempfile].read)
+      FileUtils.mv(f, "public/images")
+    end
+
+    @article = Article.new(content: RDiscount.new(params[:content]).to_html, title: params[:title] , image: params[:image][:filename])
+
+    if @article.save
+      redirect('/')
+    else
+      erb :new
+    end
   end
 end
 

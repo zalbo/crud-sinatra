@@ -1,40 +1,82 @@
-<h1> Cerca nelle email e nel messaggio </h1>
 
-<form action="/" method="GET">
-  <input type="text" name="search" value=<%=  params[:search] %>>
-  <input type="submit" value="Cerca... "><a href="/?search="> Reset </a>
-</form>
 
-<% unless @articles.empty? %>
 
-<h1> Lista dei Messaggi </h1>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          Menu
+        </a>
+      </h1>
+    </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>N.</th>
-      <th>Title</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @articles.each_with_index do |article , index | %>
-    <tr>
-      <td><%= index + 1 %></td>
-      <td><%= article.title%></td>
-      <td><a href="/show/<%= article.id %>">Mostra</a></td>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item active" href="/">Home</a>
       <% if current_user %>
-      <td><a href="/edit/<%= article.id %>">Modifica</a></td>
-      <td><a href="/delete/<%= article.id %>">Cancella</a></td>
+      <a href="/new">Nuovo Messaggio</a>
       <% end %>
-    </tr>
-    <% end %>
-  </tbody>
-</table>
+      <% if current_user %>
+        <p> Ciao <%= current_user.nickname %> </p>
+        <p><a href="/logout">Logout</a></p>
+      <% else %>
+        <p><a href="/login">Login</a></p>
+      <% end %>
 
-<% end %>
+    </nav>
+  </div>
+</div>
 
-<% if current_user %>
-<a href="/new">Nuovo Messaggio</a>
-<% end %>
+
+<div class="content container">
+  <div class="posts">
+    <div class="post">
+
+      <h1 class="post-title"> Cerca nelle email e nel messaggio </h1>
+
+      <form action="/" method="GET">
+        <input type="text" name="search" value=<%=  params[:search] %>>
+        <input type="submit" value="Cerca... "><a href="/?search="> Reset </a>
+      </form>
+    </div>
+    <% unless @articles.empty? %>
+
+    <div class="post">
+      <h1 class="post-title"> Lista dei Messaggi </h1>
+
+      <table>
+        <thead>
+          <tr>
+            <th>N.</th>
+            <th>Title</th>
+            <th colspan="3"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @articles.each_with_index do |article , index | %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= article.title%></td>
+            <td><a href="/show/<%= article.id %>">Mostra</a></td>
+            <% if current_user %>
+            <td><a href="/edit/<%= article.id %>">Modifica</a></td>
+            <td><a href="/delete/<%= article.id %>">Cancella</a></td>
+            <% end %>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <% else %>
+      <div class="post">
+        <h1 class="post-title"> Nessun messaggio presente </h1>
+      </div>
+
+      <% end %>
+
+
+
+    </div>
+  </div>
+</div>

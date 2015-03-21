@@ -1,17 +1,40 @@
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          Menu
+        </a>
+      </h1>
+    </div>
 
-<h1>Log in</h1>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item active" href="/">Home</a>
 
-<% @user_errors.errors.full_messages.each do |error| %>
-<ul type="disc">
-  <li><%= error %></li>
-</ul>
-<% end %>
+    </nav>
+  </div>
+</div>
 
 
-<form action="/login" method="post">
-  <h3> Nickname </h3>
-  <input type="text" name="nickname" value=<%= params[:nickname] %>>
-  <h3> Password </h3>
-  <input type="text" name="password" value=<%= params[:password] %>>
-  <input type="submit" value="Inserisci ">
-</form>
+<div class="content container">
+  <div class="posts">
+    <div class="post">
+
+      <h1 class="post-title">Log in</h1>
+
+      <% @user_errors.errors.full_messages.each do |error| %>
+      <ul type="disc">
+        <li><%= error %></li>
+      </ul>
+      <% end %>
+
+      <form action="/login" method="post">
+        <h3> Nickname </h3>
+        <input type="text" name="nickname" value=<%= params[:nickname] %>>
+        <h3> Password </h3>
+        <input type="text" name="password" value=<%= params[:password] %>>
+        <input type="submit" value="Inserisci ">
+      </form>
+    </div>
+  </div>
+</div>
