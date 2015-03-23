@@ -1,7 +1,10 @@
 class Article < ActiveRecord::Base
-  validates_presence_of :content , :title 
+  validates_presence_of :content , :title
+
+  mount_uploader :image, AvatarUploader
 
   has_many :comments
+
 
   def self.search(word)
     where("content LIKE ? OR title LIKE ? ", "%#{word}%", "%#{word}%")

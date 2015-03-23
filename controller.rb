@@ -8,6 +8,8 @@ require 'logger'
 require 'pry'
 require 'encrypted_cookie'
 require 'rdiscount'
+require 'carrierwave/sequel'
+require 'carrierwave/orm/activerecord'
 require_relative 'config'
 require_relative 'migration'
 require_relative 'models'
@@ -66,27 +68,20 @@ end
 
 post '/' do
 
-  if params[:image].nil?
-    @article = Article.new(content: params[:content], title: params[:title])
-    if @article.save
-      redirect('/')
-    else
-      erb :new
-    end
-  else
-    File.open(params[:image][:filename], "w") do |f|
-      f.write(params[:image][:tempfile].read)
-      FileUtils.mv(f, "public/images")
-    end
+    a = Article.new
+    a.image = params[:image]
 
-    @article = Article.new(content: params[:content], title: params[:title] , image: params[:image][:filename])
+
+
+    @article = Article.new(content: params[:content], title: params[:title] , image: a.image.url )
+    binding.pry
 
     if @article.save
       redirect('/')
     else
       erb :new
     end
-  end
+
 end
 
 post '/edit/:id' do
