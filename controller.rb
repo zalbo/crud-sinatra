@@ -15,7 +15,7 @@ require_relative 'migration'
 require_relative 'models'
 
 get '/' do
-  session[:search] = nil if params[:search] == ""
+  session[:search] = nil if params[:search] == ''
   params[:search] = session[:search] if session[:search] && params[:search].nil?
   if params[:search]
     @articles = Article.search(params[:search])
@@ -27,7 +27,7 @@ get '/' do
 end
 
 get '/new' do
-  access_danied unless current_user
+  access_denied unless current_user
   @article = Article.new
   erb :new
 end
@@ -39,19 +39,19 @@ get '/show/:id' do
 end
 
 get '/edit/:id' do
-  access_danied unless current_user
+  access_denied unless current_user
   @article = Article.find(params[:id].to_i)
   erb :edit
 end
 
 get '/delete/:id' do
-  access_danied unless  current_user
+  access_denied unless  current_user
   Article.find(params[:id].to_i).destroy
   redirect('/')
 end
 
 get '/delete_comment/:id/:a_id' do
-  access_danied unless  current_user
+  access_denied unless  current_user
   Comment.find(params[:id].to_i).destroy
   redirect("/show/#{params[:a_id].to_i}")
 end
@@ -67,27 +67,19 @@ get '/logout' do
 end
 
 post '/' do
+  @article = Article.new(content: params[:content], title: params[:title], image: params[:image])
 
-    a = Article.new
-    a.image = params[:image]
-
-
-
-    @article = Article.new(content: params[:content], title: params[:title] , image: a.image.url )
-    binding.pry
-
-    if @article.save
-      redirect('/')
-    else
-      erb :new
-    end
-
+  if @article.save
+    redirect('/')
+  else
+    erb :new
+  end
 end
 
 post '/edit/:id' do
   @article = Article.find(params[:id].to_i)
 
-  if @article.update(content: params[:content], title: params[:title])
+  if @article.update(article_params(params))
     redirect('/')
   else
     erb :edit
@@ -116,12 +108,13 @@ post '/login' do
 end
 
 def article_params(params)
-  params.delete("splat")
-  params.delete("capture")
+  params.delete('splat')
+  params.delete('capture')
+  params.delete('captures')
   params
 end
 
-def access_danied
+def access_denied
   halt 403, erb(:error)
 end
 

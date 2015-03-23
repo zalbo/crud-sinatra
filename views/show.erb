@@ -32,8 +32,8 @@
     <div class="post">
       <h1 class="post-title"><%= @article.title %></h1>
       <p><%=RDiscount.new(@article.content).to_html %></p>
-      <% unless @article.image.nil? %>
-      <img src="/images/<%= @article.image%>"/>
+      <% if @article.image %>
+      <img src="<%= @article.image.url%>" />
       <% end %>
       <% if @article.save %>
         <h1> Commenti </h1>

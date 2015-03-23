@@ -1,7 +1,13 @@
+require 'carrierwave/orm/activerecord'
+
+class ImageUploader < CarrierWave::Uploader::Base
+  storage :file
+end
+
 class Article < ActiveRecord::Base
   validates_presence_of :content , :title
 
-  mount_uploader :image, AvatarUploader
+  mount_uploader :image, ImageUploader
 
   has_many :comments
 
