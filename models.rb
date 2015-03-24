@@ -2,7 +2,6 @@ require 'carrierwave/orm/activerecord'
 
 class ImageUploader < CarrierWave::Uploader::Base
   storage :file
-  
 end
 
 class Article < ActiveRecord::Base
