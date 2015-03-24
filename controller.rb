@@ -44,6 +44,14 @@ get '/edit/:id' do
   erb :edit
 end
 
+get '/checkbox/:id' do
+  @article = Article.find(params[:id].to_i)
+  @article.image.remove!
+  @article[:image] = ""
+  @article.save
+  redirect("/edit/#{params[:id]}")
+end
+
 get '/delete/:id' do
   access_denied unless  current_user
   Article.find(params[:id].to_i).destroy
@@ -67,6 +75,7 @@ get '/logout' do
 end
 
 post '/' do
+
   @article = Article.new(content: params[:content], title: params[:title], image: params[:image])
 
   if @article.save
@@ -85,6 +94,7 @@ post '/edit/:id' do
     erb :edit
   end
 end
+
 
 post '/comment' do
   @article = Article.find(params[:article_id].to_i)

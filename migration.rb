@@ -37,8 +37,3 @@ end
     puts "#{migration}: table already exists"
   end
 end
-
-
-class AvatarUploader < CarrierWave::Uploader::Base
-  storage :file
-end

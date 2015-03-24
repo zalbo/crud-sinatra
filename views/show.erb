@@ -32,9 +32,11 @@
     <div class="post">
       <h1 class="post-title"><%= @article.title %></h1>
       <p><%=RDiscount.new(@article.content).to_html %></p>
-      <% if @article.image %>
+
+      <% unless @article[:image] == "" %>
       <img src="<%= @article.image.url%>" />
       <% end %>
+
       <% if @article.save %>
         <h1> Commenti </h1>
         <hr>
