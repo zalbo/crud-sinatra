@@ -31,6 +31,7 @@ GEM
     logger (1.2.8)
     method_source (0.8.2)
     mime-types (2.4.3)
+    mini_magick (4.2.0)
     minitest (5.4.3)
     pry (0.10.1)
       coderay (~> 1.1.0)
@@ -61,6 +62,7 @@ DEPENDENCIES
   carrierwave-sequel
   encrypted_cookie
   logger
+  mini_magick
   pry
   rdiscount (~> 2.1.8)
   sinatra

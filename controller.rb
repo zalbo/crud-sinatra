@@ -81,18 +81,23 @@ post '/edit/:id' do
 
   @article = Article.find(params[:id].to_i)
 
-  if params[:delete_img]
-    @article.image.remove!
-    @article[:image] = ""
-    @article.save
-  end
-
   if @article.update(article_params(params))
-
     redirect('/')
   else
     erb :edit
   end
+end
+
+post '/delete_img/:id' do
+
+@article = Article.find(params[:id].to_i)
+
+@article.image.remove!
+@article[:image] = nil
+@article.save
+
+redirect("/edit/#{@article.id}")
+
 end
 
 

@@ -1,7 +1,13 @@
 require 'carrierwave/orm/activerecord'
 
 class ImageUploader < CarrierWave::Uploader::Base
+  include CarrierWave::MiniMagick
   storage :file
+
+  version :thumb do
+    process resize_to_fill: [0, 50]
+  end
+
 end
 
 class Article < ActiveRecord::Base

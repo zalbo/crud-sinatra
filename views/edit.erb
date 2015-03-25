@@ -41,9 +41,17 @@
         <li><%= error %></li>
       </ul>
       <% end %>
+
+      <% unless @article[:image] == nil %>
+      <form action="/delete_img/<%=  @article.id %>" method="POST">
+        <input id="remove_img" type="image" src="<%= @article.image.thumb.url%>" />
+        <p> Clicca sull'immagine per cancellarla </p>
+      </form>
+      <% else %>
+
       <form enctype='multipart/form-data' action="/edit/<%=  @article.id %>" method="POST">
         <input name='image' type='file' >
-        <input type="checkbox" name="delete_img" value="delete_img"> Cancella immagine
+        <% end %>
         <h3> Titolo </h3>
         <input type="text" name="title" value="<%= @article.title.to_s %>">
         <h3> Messaggio </h3>

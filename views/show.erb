@@ -34,6 +34,7 @@
       <p><%=RDiscount.new(@article.content).to_html %></p>
       <% unless @article[:image] == "" %>
       <img src="<%= @article.image.url%>" />
+  
       <% end %>
       <% if @article.save %>
       <h1> Commenti </h1>
