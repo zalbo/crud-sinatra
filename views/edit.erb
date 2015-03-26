@@ -44,7 +44,8 @@
 
       <% unless @article[:image] == nil %>
       <form action="/delete_img/<%=  @article.id %>" method="POST">
-        <input id="remove_img" type="image" src="<%= @article.image.thumb.url%>" />
+
+        <input type="image" src="<%= @article.image.thumb.url%>" onMouseOver="this.src='/images_for_site/x_red.png'" onMouseOut="this.src='<%= @article.image.thumb.url%>'">
         <p> Clicca sull'immagine per cancellarla </p>
       </form>
       <% else %>
