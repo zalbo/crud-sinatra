@@ -1,0 +1,4 @@
+- make a real search (take out the value from the input field)
+- add a rake task for create a default admin and some fake data
+- move all the javascript into an external file (use document ready)
+- add the link for remove the image

@@ -84,8 +84,13 @@ post '/' do
 end
 
 post '/edit/:id' do
-
   @article = Article.find(params[:id].to_i)
+
+  delete_img = params.delete("delete_img")
+  if delete_img
+    @article.image.remove!
+    @article[:image] = nil
+  end
 
   if @article.update(article_params(params))
     redirect('/')
@@ -93,19 +98,6 @@ post '/edit/:id' do
     erb :edit
   end
 end
-
-post '/delete_img/:id' do
-
-@article = Article.find(params[:id].to_i)
-
-@article.image.remove!
-@article[:image] = nil
-@article.save
-
-redirect("/edit/#{@article.id}")
-
-end
-
 
 post '/comment' do
   @article = Article.find(params[:article_id].to_i)
