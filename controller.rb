@@ -15,6 +15,11 @@ require_relative 'migration'
 require_relative 'models'
 
 get '/' do
+  layout = true
+  if params[:layout] == "none"
+    layout = false
+  end
+
   session[:search] = nil if params[:search] == ''
   params[:search] = session[:search] if session[:search] && params[:search].nil?
   if params[:search]
@@ -23,7 +28,8 @@ get '/' do
   else
     @articles = Article.all
   end
-  erb :index
+
+  erb :index, layout: layout
 end
 
 get '/new' do

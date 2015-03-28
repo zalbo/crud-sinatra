@@ -36,7 +36,7 @@
 
       <form action="/" method="GET">
         <input type="text" name="search" value=<%=  params[:search] %>>
-        <input type="submit" value="Cerca... "><a href="/?search="> Reset </a>
+        <input id="search-btn" type="submit" value="Cerca... "><a href="/?search="> Reset </a>
       </form>
     </div>
     <% unless @articles.empty? %>

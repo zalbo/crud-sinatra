@@ -37,10 +37,20 @@
     ga('create', 'UA-146052-15', 'getpoole.com');
     ga('send', 'pageview');
   </script>
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 </head>
 
 
 <body>
   <%= yield %>
 </body>
+
+<script>
+  $("#search-btn").click(function(event){
+    event.preventDefault();
+    $.get( "/?search=SSAS&layout=none", function( data ) {
+    $( "body" ).html( data );
+   });
+  })
+</script>
 </html>
