@@ -15,19 +15,13 @@ require_relative 'migration'
 require_relative 'models'
 
 get '/' do
+
   layout = true
   if params[:layout] == "none"
-    layout = false
+    layout = true
   end
 
-  session[:search] = nil if params[:search] == ''
-  params[:search] = session[:search] if session[:search] && params[:search].nil?
-  if params[:search]
-    @articles = Article.search(params[:search])
-    session[:search] = params[:search]
-  else
-    @articles = Article.all
-  end
+  @articles = Article.search(params[:search])
 
   erb :index, layout: layout
 end

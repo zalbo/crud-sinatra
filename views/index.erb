@@ -34,9 +34,9 @@
 
       <h1 class="post-title"> Cerca nelle email e nel messaggio </h1>
 
-      <form action="/" method="GET">
-        <input type="text" name="search" value=<%=  params[:search] %>>
-        <input id="search-btn" type="submit" value="Cerca... "><a href="/?search="> Reset </a>
+      <form  action="/" method="GET">
+        <input id="search-txt" type="text" name="search" value="<%=params[:search].to_s%>">
+        <input id="search-btn" type="submit" value="Cerca... ">
       </form>
     </div>
     <% unless @articles.empty? %>
