@@ -10,3 +10,4 @@ gem 'rdiscount', '~> 2.1.8'
 gem 'carrierwave-sequel', :require => 'carrierwave/sequel'
 gem 'carrierwave'
 gem "mini_magick"
+gem 'rake', '~> 10.4.2'
