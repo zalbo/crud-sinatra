@@ -11,3 +11,5 @@ gem 'carrierwave-sequel', :require => 'carrierwave/sequel'
 gem 'carrierwave'
 gem "mini_magick"
 gem 'rake', '~> 10.4.2'
+gem "sinatra-activerecord"
+gem 'faker', '~> 1.4.3'
