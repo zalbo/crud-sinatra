@@ -25,14 +25,13 @@ namespace :db do
   desc "Create fake articles"
   task :create_fake_articles do
     puts "how many articles fake do you want create?"
-    $num = STDIN.gets.chomp.to_i
-    $i = 0
+    num = STDIN.gets.chomp.to_i
 
-    while $i < $num  do
+
+    num.times  do |x|
       fake_name = Faker::Name.name
-      fake_address = Faker::Address.street_address
-      Article.create(title: fake_name, content: fake_address)
-      $i +=1
+      fake_string = Faker::Lorem.sentence(3, true)
+      Article.create(title: fake_name, content: fake_string)
     end
   end
 
@@ -45,16 +44,15 @@ namespace :db do
     puts "insert number id of article do you want insert comments"
     id = STDIN.gets.chomp
     puts "how many comments fake do you want create?"
-    $num = STDIN.gets.chomp.to_i
-    $i = 0
+    num = STDIN.gets.chomp.to_i
 
-    while $i < $num  do
+    num.times  do  |x|
       article = Article.find(id.to_i)
       comment = article.comments.build
       fake_email = Faker::Internet.email
-      fake_address = Faker::Address.street_address
-      comment.update(email: fake_email , content: fake_address )
-      $i +=1
+      fake_string = Faker::Lorem.sentence(3, true)
+      comment.update(email: fake_email , content: fake_string )
+
     end
   end
 
