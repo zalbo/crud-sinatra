@@ -17,10 +17,10 @@
       <a href="/new">Nuovo Messaggio</a>
       <% end %>
       <% if current_user %>
-        <p> Ciao <%= current_user.nickname %> </p>
-        <p><a href="/logout">Logout</a></p>
+      <p> Ciao <%= current_user.nickname %> </p>
+      <p><a href="/logout">Logout</a></p>
       <% else %>
-        <p><a href="/login">Login</a></p>
+      <p><a href="/login">Login</a></p>
       <% end %>
 
     </nav>
@@ -39,8 +39,8 @@
         <input id="search-btn" type="submit" value="Cerca... ">
       </form>
     </div>
-    <% unless @articles.empty? %>
 
+    <% unless @articles.empty? %>
     <div class="post">
       <h1 class="post-title"> Lista dei Messaggi </h1>
 
@@ -55,9 +55,21 @@
         </thead>
 
         <tbody>
-          <% @articles.each_with_index do |article , index | %>
+
+
+          <% @articles.limit(5).offset(@offset).each_with_index do |article , index | %>
           <tr id="msg">
-            <td><%= index + 1 %></td>
+            <!-- for print correct number message -->
+
+            <% if @offset != 0 %>
+            <% currect_n = @offset - 5 %>
+            <% else %>
+            <% currect_n = @offset %>
+            <% end %>
+            <td><%= index + 1 + currect_n  %></td>
+
+            <!-- end -->
+            
             <td><%= article.title%></td>
             <td><img src="<%= article.image.thumb.url%>" /></td>
             <td><a href="/show/<%= article.id %>">Mostra</a></td>
@@ -70,15 +82,19 @@
         </tbody>
       </table>
 
-      <% else %>
-      <div class="post">
-        <h1 class="post-title"> Nessun messaggio presente </h1>
-      </div>
-
+      <% @numberpage.times  do |x| %>
+      <a href="/page/<%= x + 1 %>" name"offset"><%= x + 1 %></a>
       <% end %>
 
 
 
+
+
+      <% else %>
+      <div class="post">
+        <h1 class="post-title"> Nessun messaggio presente </h1>
+      </div>
+      <% end %>
     </div>
   </div>
 </div>

@@ -15,16 +15,27 @@ require_relative 'migration'
 require_relative 'models'
 
 get '/' do
+  redirect('/page/1')
+end
+
+get '/page/:offset' do
+  @articles = Article.search(params[:search])
+  @numberpage = (Article.count / 5) - 1
+
+  if params[:offset].to_i == 1
+    @offset = 0
+  else
+    @offset = params[:offset].to_i * 5
+  end
 
   layout = true
   if params[:layout] == "none"
     layout = true
   end
 
-  @articles = Article.search(params[:search])
-
   erb :index, layout: layout
 end
+
 
 get '/new' do
   access_denied unless current_user

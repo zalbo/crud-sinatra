@@ -21,5 +21,4 @@ $( document ).ready(function() {
   if( $("#img").length  ) {
     $('#img-chosefile').hide();
   }
-
 });
