@@ -18,7 +18,8 @@ get '/' do
   @articles = Article.search(params[:search])
   @numberpage = number_page(Article.count)
 
-  @offset = params[:offset].to_i * 5
+
+  @offset = params[:offset].to_i * session[:articles_for_page]
 
   layout = true
   if params[:layout] == "none"
@@ -36,7 +37,7 @@ get '/page/:offset' do
   @articles = Article.search(params[:search])
   @numberpage = number_page(Article.count)
 
-  @offset = params[:offset].to_i * 5 - 5
+  @offset = params[:offset].to_i * session[:articles_for_page] - session[:articles_for_page]
 
   layout = true
   if params[:layout] == "none"
@@ -45,7 +46,6 @@ get '/page/:offset' do
 
   erb :index, layout: layout
 end
-
 
 get '/new' do
   access_denied unless current_user
@@ -98,6 +98,12 @@ post '/' do
   end
 end
 
+post '/formatpage'do
+session[:articles_for_page] = params[:articles_for_page].to_i
+redirect ('/')
+end
+
+
 post '/edit/:id' do
   @article = Article.find(params[:id].to_i)
 
@@ -148,7 +154,7 @@ def access_denied
 end
 
 def number_page(number_article)
-  n_array = number_article.divmod(5)
+  n_array = number_article.divmod(session[:articles_for_page])
   if n_array[1] == 0
     return  n_array[0]
   else
