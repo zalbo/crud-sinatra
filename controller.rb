@@ -15,18 +15,28 @@ require_relative 'migration'
 require_relative 'models'
 
 get '/' do
-  redirect('/page/1')
+  @articles = Article.search(params[:search])
+  @numberpage = number_page(Article.count)
+
+  @offset = params[:offset].to_i * 5
+
+  layout = true
+  if params[:layout] == "none"
+    layout = true
+  end
+
+  erb :index, layout: layout
 end
 
 get '/page/:offset' do
-  @articles = Article.search(params[:search])
-  @numberpage = (Article.count / 5) - 1
-
   if params[:offset].to_i == 1
-    @offset = 0
-  else
-    @offset = params[:offset].to_i * 5
+    redirect ('/')
   end
+
+  @articles = Article.search(params[:search])
+  @numberpage = number_page(Article.count)
+
+  @offset = params[:offset].to_i * 5 - 5
 
   layout = true
   if params[:layout] == "none"
@@ -135,6 +145,15 @@ end
 
 def access_denied
   halt 403, erb(:error)
+end
+
+def number_page(number_article)
+  n_array = number_article.divmod(5)
+  if n_array[1] == 0
+    return  n_array[0]
+  else
+    return  n_array[0] + 1
+  end
 end
 
 helpers do

@@ -11,7 +11,7 @@ class ImageUploader < CarrierWave::Uploader::Base
 end
 
 class Article < ActiveRecord::Base
-  validates_presence_of :content , :title
+  validates_presence_of  :title #insert CONTENT||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
   mount_uploader :image, ImageUploader
 
