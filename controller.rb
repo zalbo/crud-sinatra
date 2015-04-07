@@ -15,11 +15,24 @@ require_relative 'migration'
 require_relative 'models'
 
 get '/' do
-  @articles = Article.search(params[:search])
-  @numberpage = number_page(Article.count)
 
+  if session[:articles_for_page] == nil
+    params[:articles_for_page] = 5
+    session[:articles_for_page] = params[:articles_for_page]
+  else
+    params[:articles_for_page] = session[:articles_for_page]
+  end
 
-  @offset = params[:offset].to_i * session[:articles_for_page]
+  if params[:search] != nil
+    session[:search] = params[:search]
+  else
+    params[:search] = session[:search]
+    session = nil
+  end
+
+  @numberpage = number_page(Article.search(params[:search]).count)
+  @offset = params[:offset].to_i * params[:articles_for_page]
+  @articles = Article.search(params[:search]).limit(params[:articles_for_page]).offset(@offset)
 
   layout = true
   if params[:layout] == "none"
@@ -34,10 +47,15 @@ get '/page/:offset' do
     redirect ('/')
   end
 
-  @articles = Article.search(params[:search])
-  @numberpage = number_page(Article.count)
+  if session[:articles_for_page] == nil
+    params[:articles_for_page] = 5
+  else
+    params[:articles_for_page] = session[:articles_for_page]
+  end
 
-  @offset = params[:offset].to_i * session[:articles_for_page] - session[:articles_for_page]
+  @numberpage = number_page(Article.search(session[:search]).count)
+  @offset = params[:offset].to_i * params[:articles_for_page] - params[:articles_for_page]
+  @articles = Article.search(session[:search]).limit(params[:articles_for_page]).offset(@offset)
 
   layout = true
   if params[:layout] == "none"
@@ -103,7 +121,6 @@ session[:articles_for_page] = params[:articles_for_page].to_i
 redirect ('/')
 end
 
-
 post '/edit/:id' do
   @article = Article.find(params[:id].to_i)
 
@@ -154,7 +171,7 @@ def access_denied
 end
 
 def number_page(number_article)
-  n_array = number_article.divmod(session[:articles_for_page])
+  n_array = number_article.divmod(session[:articles_for_page]) ###
   if n_array[1] == 0
     return  n_array[0]
   else

@@ -9,14 +9,14 @@ $( document ).ready(function() {
     $('#img-chosefile').show();
   })
 
-  //Search in index
-  $("#search-btn").click(function(event){
-    event.preventDefault();
-    var word = $("#search-txt").val()
-    $.get( "/?search="+ word + "", function( data ) {
-      $( "body" ).html( data );
-    });
-  })
+  // //Search in index
+  // $("#search-btn").click(function(event){
+  //   event.preventDefault();
+  //   var word = $("#search-txt").val()
+  //   $.get( "/?search="+ word + "", function( data ) {
+  //     $( "body" ).html( data );
+  //   });
+  // })
 
   if( $("#img").length  ) {
     $('#img-chosefile').hide();
