@@ -1,3 +1,6 @@
+
+
+
 <div class="sidebar">
   <div class="container sidebar-sticky">
     <div class="sidebar-about">
@@ -54,7 +57,7 @@
         <tbody>
           <% @articles.each_with_index do |article , index | %>
           <tr id="msg">
-            <td><%= index + 1 + @offset %></td>
+            <td><%= index + 1 + @a  %></td>
             <td><%= article.title%></td>
             <td><img src="<%= article.image.thumb.url%>" /></td>
             <td><a href="/show/<%= article.id %>">Mostra</a></td>
@@ -67,6 +70,12 @@
         </tbody>
       </table>
 
+      <% i = 1 %>
+      <%until @articles.page(i).per(session[:articles_for_page]).size == 0 do  %>
+      <a href="/page/<%=i%>"><%=i%></a>
+      <% i += 1 %>
+      <% end %>
+
       <form action="/formatpage" method="POST">
         <input type="radio" name="articles_for_page" value="5" >5
         <br>
@@ -75,12 +84,9 @@
         <input type="radio" name="articles_for_page" value="50">50
         <br>
         <input type="radio" name="articles_for_page" value="100">100
-        <input type="submit" value="refresh"
-      <a href="/page/1">First</a>
-      <% @numberpage.times  do |x| %>
-      <a href="/page/<%= x + 1 %>" name"offset"><%= x + 1 %></a>
-      <% end %>
-      <a href="/page/<%= @numberpage %>">Last</a>
+        <input type="submit" value="refresh">
+      </form>
+
 
       <% else %>
       <div class="post">

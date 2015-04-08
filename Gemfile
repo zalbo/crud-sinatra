@@ -13,3 +13,4 @@ gem "mini_magick"
 gem 'rake', '~> 10.4.2'
 gem "sinatra-activerecord"
 gem 'faker', '~> 1.4.3'
+gem 'kaminari', :require => 'kaminari/sinatra'

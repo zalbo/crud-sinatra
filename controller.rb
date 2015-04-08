@@ -10,11 +10,14 @@ require 'encrypted_cookie'
 require 'rdiscount'
 require 'carrierwave/sequel'
 require 'carrierwave/orm/activerecord'
+require 'kaminari/sinatra'
 require_relative 'config'
 require_relative 'migration'
 require_relative 'models'
 
 get '/' do
+  session[:page] = 1
+  @a = 0
 
   if session[:articles_for_page] == nil
     params[:articles_for_page] = 5
@@ -30,9 +33,7 @@ get '/' do
     session = nil
   end
 
-  @numberpage = number_page(Article.search(params[:search]).count)
-  @offset = params[:offset].to_i * params[:articles_for_page]
-  @articles = Article.search(params[:search]).limit(params[:articles_for_page]).offset(@offset)
+  @articles = Article.search(params[:search]).page(1).per(params[:articles_for_page])
 
   layout = true
   if params[:layout] == "none"
@@ -42,20 +43,15 @@ get '/' do
   erb :index, layout: layout
 end
 
-get '/page/:offset' do
-  if params[:offset].to_i == 1
+get '/page/:page' do
+  if params[:page].to_i == 1
     redirect ('/')
   end
+  session[:page] = params[:page].to_i
 
-  if session[:articles_for_page] == nil
-    params[:articles_for_page] = 5
-  else
-    params[:articles_for_page] = session[:articles_for_page]
-  end
+  @a = (session[:articles_for_page] * params[:page].to_i) - session[:articles_for_page]
 
-  @numberpage = number_page(Article.search(session[:search]).count)
-  @offset = params[:offset].to_i * params[:articles_for_page] - params[:articles_for_page]
-  @articles = Article.search(session[:search]).limit(params[:articles_for_page]).offset(@offset)
+  @articles = Article.search(session[:search]).page(params[:page]).per(session[:articles_for_page])
 
   layout = true
   if params[:layout] == "none"
@@ -86,7 +82,11 @@ end
 get '/delete/:id' do
   access_denied unless  current_user
   Article.find(params[:id].to_i).destroy
-  redirect('/')
+  if session[:page] == 1
+    redirect('/')
+  else
+    redirect("/page/#{session[:page]}")
+  end
 end
 
 get '/delete_comment/:id/:a_id' do
@@ -168,15 +168,6 @@ end
 
 def access_denied
   halt 403, erb(:error)
-end
-
-def number_page(number_article)
-  n_array = number_article.divmod(session[:articles_for_page]) ###
-  if n_array[1] == 0
-    return  n_array[0]
-  else
-    return  n_array[0] + 1
-  end
 end
 
 helpers do
