@@ -17,13 +17,13 @@ require_relative 'models'
 
 get '/' do
   session[:page] = 1
-  @a = 0
+  @n_article = 0
 
-  if session[:articles_for_page] == nil
-    params[:articles_for_page] = 5
-    session[:articles_for_page] = params[:articles_for_page]
+  if session[:page_count] == nil
+    params[:page_count] = 5
+    session[:page_count] = params[:page_count]
   else
-    params[:articles_for_page] = session[:articles_for_page]
+    params[:page_count] = session[:page_count]
   end
 
   if params[:search] != nil
@@ -33,7 +33,7 @@ get '/' do
     session = nil
   end
 
-  @articles = Article.search(params[:search]).page(1).per(params[:articles_for_page])
+  @articles = Article.search(params[:search]).page(1).per(params[:page_count])
 
   layout = true
   if params[:layout] == "none"
@@ -49,9 +49,9 @@ get '/page/:page' do
   end
   session[:page] = params[:page].to_i
 
-  @a = (session[:articles_for_page] * params[:page].to_i) - session[:articles_for_page]
+  @n_article = (session[:page_count] * params[:page].to_i) - session[:page_count]
 
-  @articles = Article.search(session[:search]).page(params[:page]).per(session[:articles_for_page])
+  @articles = Article.search(session[:search]).page(params[:page]).per(session[:page_count])
 
   layout = true
   if params[:layout] == "none"
@@ -117,7 +117,7 @@ post '/' do
 end
 
 post '/formatpage'do
-session[:articles_for_page] = params[:articles_for_page].to_i
+session[:page_count] = params[:page_count].to_i
 redirect ('/')
 end
 
