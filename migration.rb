@@ -4,6 +4,7 @@ class CreateArticleMigration < ActiveRecord::Migration
       t.text :content
       t.text :title
       t.text :image
+      t.text :file3d
     end
   end
 end

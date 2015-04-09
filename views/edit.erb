@@ -49,7 +49,7 @@
 
       <form enctype='multipart/form-data' action="/edit/<%=  @article.id %>" method="POST">
         <input type="checkbox" name="delete_img" value="1" id="img-check" style="display:none" >
-        <input name='image' type='file' id="img-chosefile" >
+        <input name='file' type='image' id="img-chosefile" >
         <h3> Titolo </h3>
         <input type="text" name="title" value="<%= @article.title.to_s %>">
         <h3> Messaggio </h3>

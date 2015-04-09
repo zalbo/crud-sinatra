@@ -106,8 +106,8 @@ get '/logout' do
 end
 
 post '/' do
-
-  @article = Article.new(content: params[:content], title: params[:title], image: params[:image])
+  binding.pry
+  @article = Article.new(content: params[:content], title: params[:title], image: params[:image], file3d: params[:file3d])
 
   if @article.save
     redirect('/')

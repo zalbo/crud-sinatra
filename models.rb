@@ -1,5 +1,13 @@
 require 'carrierwave/orm/activerecord'
 
+class FileUploader < CarrierWave::Uploader::Base
+  def store_dir
+   'objects'
+ end
+  storage :file
+
+end
+
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
   storage :file
@@ -13,7 +21,9 @@ end
 class Article < ActiveRecord::Base
   validates_presence_of  :title, :content
 
+
   mount_uploader :image, ImageUploader
+  mount_uploader :file3d, FileUploader
 
   has_many :comments
 

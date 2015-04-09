@@ -1,4 +1,51 @@
+<script>
 
+    var scene, camera, renderer;
+    var geometry, material, mesh;
+
+    init();
+    animate();
+
+    function init() {
+
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+        camera.position.z = 1000;
+
+        geometry = new THREE.BoxGeometry( 200, 200, 200 );
+        material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+
+        mesh = new THREE.Mesh( geometry, material );
+        scene.add( mesh );
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        document.body.appendChild( renderer.domElement );
+
+    }
+
+
+</script>
+
+<script src="/js/Three.js"></script>
+<script src="/js/plane.js"></script>
+<script src="/js/thingiview.js"></script>
+
+
+<span data-filename= <%= @article[:file3d] %> ></span>
+
+
+<script>
+ window.onload = function() {
+   thingiurlbase = "/javascripts";
+   thingiview = new Thingiview("viewer");
+   thingiview.setObjectColor('#C0D8F0');
+   thingiview.initScene();
+   thingiview.loadSTL("/objects/" + $("span").attr('data-filename'));
+ }
+</script>
 
 <div class="sidebar">
   <div class="container sidebar-sticky">
@@ -26,15 +73,15 @@
   </div>
 </div>
 
-
 <div class="content container">
   <div class="posts">
     <div class="post">
       <h1 class="post-title"><%= @article.title %></h1>
       <p><%=RDiscount.new(@article.content).to_html %></p>
+      <div id="viewer" style="width:300px;height:300px"></div>
       <% unless @article[:image] == "" %>
       <img src="<%= @article.image.url%>" />
-  
+
       <% end %>
       <% if @article.save %>
       <h1> Commenti </h1>
