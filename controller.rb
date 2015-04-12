@@ -35,12 +35,7 @@ get '/' do
 
   @articles = Article.search(params[:search]).page(1).per(params[:page_count])
 
-  layout = true
-  if params[:layout] == "none"
-    layout = true
-  end
-
-  erb :index, layout: layout
+  erb :index
 end
 
 get '/page/:page' do
@@ -53,12 +48,7 @@ get '/page/:page' do
 
   @articles = Article.search(session[:search]).page(params[:page]).per(session[:page_count])
 
-  layout = true
-  if params[:layout] == "none"
-    layout = true
-  end
-
-  erb :index, layout: layout
+  erb :index
 end
 
 get '/new' do
@@ -106,7 +96,6 @@ get '/logout' do
 end
 
 post '/' do
-  binding.pry
   @article = Article.new(content: params[:content], title: params[:title], image: params[:image], file3d: params[:file3d])
 
   if @article.save
@@ -124,10 +113,17 @@ end
 post '/edit/:id' do
   @article = Article.find(params[:id].to_i)
 
+
   delete_img = params.delete("delete_img")
   if delete_img
     @article.image.remove!
     @article[:image] = nil
+  end
+
+  if params[:delete_3d]
+    @article.file3d.remove!
+
+    @article[:file3d] = nil
   end
 
   if @article.update(article_params(params))
@@ -163,6 +159,7 @@ def article_params(params)
   params.delete('capture')
   params.delete('captures')
   params.delete('delete_img')
+  params.delete('delete_3d')
   params
 end
 

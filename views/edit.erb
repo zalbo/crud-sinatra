@@ -1,3 +1,42 @@
+<script>
+
+var scene, camera, renderer;
+var geometry, material, mesh;
+
+init();
+animate();
+
+function init() {
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+  camera.position.z = 1000;
+  geometry = new THREE.BoxGeometry( 200, 200, 200 );
+  material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+  mesh = new THREE.Mesh( geometry, material );
+  scene.add( mesh );
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild( renderer.domElement );
+}
+
+</script>
+
+<script src="/js/Three.js"></script>
+<script src="/js/plane.js"></script>
+<script src="/js/thingiview.js"></script>
+
+<span data-filename= <%= @article[:file3d] %> ></span>
+
+<script>
+window.onload = function() {
+  thingiurlbase = "/javascripts";
+  thingiview = new Thingiview("viewer");
+  thingiview.setObjectColor('#C0D8F0');
+  thingiview.initScene();
+  thingiview.loadSTL("/objects/" + $("span").attr('data-filename'));
+}
+</script>
+
 <div class="sidebar">
   <div class="container sidebar-sticky">
     <div class="sidebar-about">
@@ -7,7 +46,6 @@
         </a>
       </h1>
     </div>
-
     <nav class="sidebar-nav">
       <a class="sidebar-nav-item active" href="/">Home</a>
       <% if current_user %>
@@ -19,7 +57,6 @@
       <% else %>
       <p><a href="/login">Login</a></p>
       <% end %>
-
     </nav>
   </div>
 </div>
@@ -43,13 +80,30 @@
       <% end %>
 
       <% unless @article[:image] == nil %>
+      <img src="<%= @article.image.thumb.url%>">
+      <% end %>
 
-        <img src="<%= @article.image.thumb.url%>" id="img"> <a href="#" id="img-x">x</a>
+      <% unless @article[:file3d] == nil %>
+      <div style="width:100px;height:100px" id="viewer"></div>
       <% end %>
 
       <form enctype='multipart/form-data' action="/edit/<%=  @article.id %>" method="POST">
-        <input type="checkbox" name="delete_img" value="1" id="img-check" style="display:none" >
-        <input name='file' type='image' id="img-chosefile" >
+        <% unless @article[:image] == nil %>
+        <input type="checkbox" name="delete_img" value="1" "> Cancella immagine
+        <br/>
+        <% end %>
+        <% unless @article[:file3d] == nil %>
+        <input type="checkbox" name="delete_3d" value="1">  Cancella file 3d
+        <br/>
+        <% end %>
+        <% if @article[:image] == nil %>
+        <input name='image' type='file'>Carica Immagine 
+        <br/>
+        <% end %>
+        <% if @article[:file3d] == nil %>
+        <input id="name-file" name='file3d' type='file'>Carica 3d
+        <br/>
+        <% end %>
         <h3> Titolo </h3>
         <input type="text" name="title" value="<%= @article.title.to_s %>">
         <h3> Messaggio </h3>
