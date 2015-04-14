@@ -89,6 +89,23 @@ window.onload = function() {
       <% end %>
       <%end%>
 
+      <h4> Manda questa email a qualche tuo amico </h4>
+      <h9><%=@state%></h9>
+      <form action="/email/<%=@article.id%>" method="POST">
+
+        <input type="text" name="sender_email">
+        <h7> Inserisci qui la tua l'email </h7> <br>
+        <input type="text" name="password">
+        <h7> Inserisci qui la password della tua casella email </h7> <br>
+        <input type="text" name="receiver_email" >
+        <h7> Inserisci qui l'email del destinatario </h7> <br>
+        <input type="submit" value="Manda Email ">
+      </form>
+
+
+
+
+
       <h1> Scrivi commento </h1>
 
       <% @comment.errors.full_messages.each do |error| %>

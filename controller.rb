@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'bundler/setup'
-
 require 'active_record'
 require 'sinatra'
 require 'sqlite3'
@@ -11,6 +10,7 @@ require 'rdiscount'
 require 'carrierwave/sequel'
 require 'carrierwave/orm/activerecord'
 require 'kaminari/sinatra'
+require 'net/smtp'
 require_relative 'config'
 require_relative 'migration'
 require_relative 'models'
@@ -152,6 +152,30 @@ post '/login' do
     @user_errors = User.create(params)
     erb :login
   end
+end
+
+post '/email/:id' do
+
+  @article = Article.find(params[:id].to_i)
+  @comment = Comment.new(article_id: @article.id)
+
+begin
+  message = <<EOF
+  Subject: #{@article.title}
+  #{@article.content}
+EOF
+
+  smtp = Net::SMTP.new 'smtp.gmail.com', 587
+  smtp.enable_starttls
+  smtp.start('gmail.com',params[:sender_email], params[:password] , :login)
+  smtp.send_message message, params[:sender_email] , params[:receiver_email]
+  smtp.finish
+  @state = "Email inviata"
+rescue Net::SMTPAuthenticationError
+  @state = "Errore controlla la tua email o la tua password"
+end
+
+erb :show
 end
 
 def article_params(params)
