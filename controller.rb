@@ -10,6 +10,8 @@ require 'rdiscount'
 require 'carrierwave/sequel'
 require 'carrierwave/orm/activerecord'
 require 'kaminari/sinatra'
+require 'dotenv'
+Dotenv.load
 require 'net/smtp'
 require_relative 'config'
 require_relative 'migration'
@@ -95,6 +97,11 @@ get '/logout' do
   redirect('/')
 end
 
+get '/contact' do
+
+  erb :contact
+end
+
 post '/' do
   @article = Article.new(content: params[:content], title: params[:title], image: params[:image], file3d: params[:file3d])
 
@@ -154,28 +161,30 @@ post '/login' do
   end
 end
 
-post '/email/:id' do
-
-  @article = Article.find(params[:id].to_i)
-  @comment = Comment.new(article_id: @article.id)
+post '/contact' do
 
 begin
+guest_email = params[:email]
+form_content = params[:content]
+
   message = <<EOF
-  Subject: #{@article.title}
-  #{@article.content}
+Subject: #{guest_email}
+#{form_content}
 EOF
 
-  smtp = Net::SMTP.new 'smtp.gmail.com', 587
-  smtp.enable_starttls
-  smtp.start('gmail.com',params[:sender_email], params[:password] , :login)
-  smtp.send_message message, params[:sender_email] , params[:receiver_email]
-  smtp.finish
-  @state = "Email inviata"
+smtp = Net::SMTP.new 'smtp.gmail.com', 587
+smtp.enable_starttls
+smtp.start('gmail.com', ENV['SITE_EMAIL'], ENV['PASSWORD_EMAIL'], :login)
+smtp.send_message message, ENV['SITE_EMAIL'] , params[:email]
+smtp.finish
+  @state = "Email Invitata"
 rescue Net::SMTPAuthenticationError
+  @state = "Errore controlla la tua email o la tua password"
+rescue Net::SMTPFatalError
   @state = "Errore controlla la tua email o la tua password"
 end
 
-erb :show
+erb :contact
 end
 
 def article_params(params)

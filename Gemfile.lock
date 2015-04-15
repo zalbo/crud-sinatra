@@ -38,6 +38,7 @@ GEM
       carrierwave
       sequel
     coderay (1.1.0)
+    dotenv (2.0.1)
     encrypted_cookie (0.0.4)
     erubis (2.7.0)
     faker (1.4.3)
@@ -98,6 +99,7 @@ DEPENDENCIES
   activerecord
   carrierwave
   carrierwave-sequel
+  dotenv (~> 2.0.1)
   encrypted_cookie
   faker (~> 1.4.3)
   kaminari
