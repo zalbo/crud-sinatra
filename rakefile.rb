@@ -1,6 +1,53 @@
 require 'faker'
 require_relative './controller.rb'
 
+def require_env
+  require 'dotenv'
+  Dotenv.load
+  require 'net/smtp'
+end
+
+def create_email
+  require_env
+
+  File.new(".env", "w")
+  puts "file .env create"
+  puts "insert your email (only gmail)"
+  email = gets.chomp
+  puts "insert password email "
+  password = gets.chomp
+  puts "confirm password"
+  conf_password = gets.chomp
+  if password == conf_password
+
+    file = File.open(".env", 'w')
+    file << """export SITE_EMAIL=#{email}
+export PASSWORD_EMAIL=#{password}"""
+    file.close
+
+    begin
+      require_env
+      message = <<EOF
+Subject: Text Email
+Email and pass correct
+EOF
+
+      smtp = Net::SMTP.new 'smtp.gmail.com', 587
+      smtp.enable_starttls
+      smtp.start('gmail.com', ENV['SITE_EMAIL'], ENV['PASSWORD_EMAIL'], :login)
+      smtp.send_message message, ENV['SITE_EMAIL'] ,  ENV['SITE_EMAIL']
+      smtp.finish
+      puts "Email ok"
+    rescue Net::SMTPAuthenticationError
+      puts "Email or pass incorrect"
+    rescue Net::SMTPFatalError
+      puts "Email or pass incorrect"
+    end
+  else
+      puts "error password"
+  end
+end
+
 
 namespace :db do
 
@@ -95,5 +142,12 @@ namespace :db do
       article.comments.destroy_all
       puts "DONE!"
     end
+  end
+end
+
+namespace :env do
+  desc "delete env"
+  task :delete_env do
+    File.delete(".env")
   end
 end

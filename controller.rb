@@ -10,12 +10,11 @@ require 'rdiscount'
 require 'carrierwave/sequel'
 require 'carrierwave/orm/activerecord'
 require 'kaminari/sinatra'
-require 'dotenv'
-Dotenv.load
-require 'net/smtp'
 require_relative 'config'
 require_relative 'migration'
 require_relative 'models'
+require_relative './create_email_env.rb'
+
 
 get '/' do
   session[:page] = 1
@@ -164,18 +163,15 @@ end
 post '/contact' do
 
 begin
-guest_email = params[:email]
-form_content = params[:content]
-
   message = <<EOF
-Subject: #{guest_email}
-#{form_content}
+Subject: #{"Domanda scritta da " + params[:email] }
+#{params[:content]}
 EOF
 
 smtp = Net::SMTP.new 'smtp.gmail.com', 587
 smtp.enable_starttls
 smtp.start('gmail.com', ENV['SITE_EMAIL'], ENV['PASSWORD_EMAIL'], :login)
-smtp.send_message message, ENV['SITE_EMAIL'] , params[:email]
+smtp.send_message message, params[:email] ,  ENV['SITE_EMAIL']
 smtp.finish
   @state = "Email Invitata"
 rescue Net::SMTPAuthenticationError
