@@ -58,7 +58,15 @@ window.onload = function() {
       <% else %>
       <p><a href="/login">Login</a></p>
       <% end %>
-
+      <p><a href="/contact">Contattaci</a></p>
+      <h3>::GITHUB::</h3>
+      <p>User: <a href="<%= github_user["html_url"]%>"><%=  github_user["login"]%></a></p>
+      <h5>Repo</h5>
+      <% @github_commits.each do |commit| %>
+      <tr>
+        <td><a href="<%= commit["clone_url"]%>"><%= commit["name"]%></a></td><br>
+      </tr>
+      <% end %>
     </nav>
   </div>
 </div>

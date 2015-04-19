@@ -15,8 +15,9 @@ require_relative 'migration'
 require_relative 'models'
 require_relative './create_email_env.rb'
 
-
 get '/' do
+  @github_user  = github_user
+  @github_commits  = github_commits
   session[:page] = 1
   @n_article = 0
 
@@ -53,18 +54,24 @@ get '/page/:page' do
 end
 
 get '/new' do
+  @github_user  = github_user
+  @github_commits  = github_commits
   access_denied unless current_user
   @article = Article.new
   erb :new
 end
 
 get '/show/:id' do
+  @github_user  = github_user
+  @github_commits  = github_commits
   @article = Article.find(params[:id].to_i)
   @comment = Comment.new(article_id: @article.id)
   erb :show
 end
 
 get '/edit/:id' do
+  @github_user  = github_user
+  @github_commits  = github_commits
   access_denied unless current_user
   @article = Article.find(params[:id].to_i)
   erb :edit
@@ -102,6 +109,7 @@ get '/contact' do
 end
 
 post '/' do
+  
   @article = Article.new(content: params[:content], title: params[:title], image: params[:image], file3d: params[:file3d])
 
   if @article.save
@@ -181,6 +189,18 @@ rescue Net::SMTPFatalError
 end
 
 erb :contact
+end
+
+def github_user
+    uri = URI('https://api.github.com/users/zalbo')
+    body = Net::HTTP.get(uri)
+    user = JSON.parse(body)
+end
+
+def github_commits
+    uri = URI('https://api.github.com/users/zalbo/repos')
+    body = Net::HTTP.get(uri)
+    commits = JSON.parse(body)
 end
 
 def article_params(params)

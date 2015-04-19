@@ -1,4 +1,4 @@
-/*
+  /*
  *                        ___
  *                       /\_ \
  *  _____     ___     ___\//\ \      __
@@ -90,7 +90,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: .5rem;
   font-weight: bold;
   line-height: 1.25;
-  color: #313131;
+  color: rgba(255, 0, 0, 1);
   text-rendering: optimizeLegibility;
 }
 h1 {
